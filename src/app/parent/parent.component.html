@@ -35,7 +35,7 @@
 
   <div>
     <h2>Select a Name</h2>
-    <div class="container-2" *ngFor="let name of allNames$ | async">
+    <div class="container-2" *ngFor="let name of unselectedNames$ | async">
       <div>
         {{ name }}
       </div>

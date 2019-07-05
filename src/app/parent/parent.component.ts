@@ -34,6 +34,7 @@ export class ParentComponent implements OnInit {
   defaultNames$ = of(['Mitchell', 'Hugo']);
   freeNames$ = of(['Hanneke', 'Emiel', 'Dennis']);
   allNames$: Observable<string[]>;
+  unselectedNames$: Observable<string[]>;
   selectedNames$: Observable<string[]> = new Observable<string[]>();
   addNameEvent$: EventEmitter<string> = new EventEmitter<string>();
   removeNameEvent$: EventEmitter<string> = new EventEmitter<string>();
@@ -43,33 +44,68 @@ export class ParentComponent implements OnInit {
 
   ngOnInit() {
     this.allNames$ = this.createAllNames();
-    this.sn$ = this.createSelectedNames(this.defaultNames$, this.addNameEvent$, this.removeNameEvent$);
+    this.sn$ = this.createSelectedNames(
+      this.defaultNames$,
+      this.addNameEvent$,
+      this.removeNameEvent$
+    );
+    this.unselectedNames$ = this.createUnselectedNames(
+      this.allNames$,
+      this.sn$
+    );
   }
 
   createAllNames() {
-    const allNames = zip(this.defaultNames$, this.freeNames$).pipe(map(([a, b]) => {
-      return [...a, ...b];
-    }));
+    const allNames = zip(this.defaultNames$, this.freeNames$).pipe(
+      map(([a, b]) => {
+        return [...a, ...b];
+      })
+    );
 
     return allNames;
   }
 
-  createSelectedNames(defaultNames$: Observable<string[]>, addNames$: Observable<string>, removeName$: Observable<string>) {
-    const emptySelected = defaultNames$;
+  createUnselectedNames(
+    allNames$: Observable<string[]>,
+    selectedNames$: Observable<string[]>
+  ): Observable<string[]> {
+    const unselectedNames$ = combineLatest(allNames$, selectedNames$).pipe(
+      map(([an, sn]) => {
+      const tests = an;
+      const test = sn;
+      const filtered = tests.filter(p => !test.includes(p));
+      return filtered;
+      }),
+    );
 
-    const added$ = combineLatest(emptySelected, addNames$).pipe(map(([es, an]) => {
-      es.push(an);
-      return es;
-    }));
+    return unselectedNames$;
+  }
 
-    const removed$ = combineLatest(emptySelected, removeName$).pipe(map(([es, rn]) => {
-      for (let index = es.length - 1; index >= 0; index--) {
-        if (es[index] === rn ) {
-          es.splice(index, 1);
+  createSelectedNames(
+    defaultNames$: Observable<string[]>,
+    addNames$: Observable<string>,
+    removeName$: Observable<string>
+  ) {
+    const added$ = combineLatest(defaultNames$, addNames$).pipe(
+      map(([es, an]) => {
+        es.push(an);
+        return es;
+      }),
+      publish(),
+      refCount(),
+      tap(() => console.log('add'))
+    );
+
+    const removed$ = combineLatest(defaultNames$, removeName$).pipe(
+      map(([es, rn]) => {
+        for (let index = es.length - 1; index >= 0; index--) {
+          if (es[index] === rn) {
+            es.splice(index, 1);
+          }
         }
-      }
-      return es;
-    }));
+        return es;
+      })
+    );
 
     const merged$ = merge(added$, this.defaultNames$.pipe(first()), removed$);
 
@@ -77,6 +113,7 @@ export class ParentComponent implements OnInit {
   }
 
   addName(name: string) {
+    console.log('addName');
     this.addNameEvent$.emit(name);
   }
 
