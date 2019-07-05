@@ -1,0 +1,7 @@
+<p>
+  child works!
+</p>
+<button (click)="addOne()">add one child</button>
+<p *ngFor="let number of subject | async">
+  {{ number }}
+</p>

@@ -1,0 +1,48 @@
+<div class="container">
+  
+  <div>
+    <h2>Default Names</h2>
+    <p *ngFor="let name of defaultNames$ | async">
+      {{ name }}
+    </p>
+  </div>
+
+  <div>
+    <h2>Free Names</h2>
+    <p *ngFor="let name of freeNames$ | async">
+      {{ name }}
+    </p>
+  </div>
+  
+  <div>
+    <h2>All Names</h2>
+    <p *ngFor="let name of allNames$ | async">
+      {{ name }}
+    </p>
+  </div>
+
+  <div>
+    <h2>Selected Names</h2>
+    <div class="container-2" *ngFor="let name of sn$ | async">
+      <div>
+        {{ name }}
+      </div>
+      <div>
+        <button (click)="removeName(name)">remove</button>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <h2>Select a Name</h2>
+    <div class="container-2" *ngFor="let name of allNames$ | async">
+      <div>
+        {{ name }}
+      </div>
+      <div>
+        <button (click)="addName(name)">add</button>
+      </div>
+    </div>
+  </div>
+
+</div>
