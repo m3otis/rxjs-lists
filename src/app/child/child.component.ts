@@ -17,7 +17,6 @@ export class ChildComponent implements OnInit {
 
   subject2 = new Subject<number[]>();
 
-
   constructor() {}
 
   ngOnInit() {}
