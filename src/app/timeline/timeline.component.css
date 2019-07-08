@@ -1,0 +1,44 @@
+.container {
+  display: grid;
+  grid-template-columns: 10% min-content auto min-content 10%;
+  grid-template-rows: auto auto;
+  text-align: center;
+  align-items: center;
+  width: 50%;
+}
+
+.dotted {
+  border-top: 2px dotted;
+}
+
+.solid {
+  border-top: 1px solid;
+  animation: linemove 1s linear;
+}
+
+.date {
+  padding: 15px;
+  background-color: #e0e0e0;
+  border-radius: 200px;
+}
+
+.date:hover {
+  background-color: rgba(255,255,0,.5);
+}
+
+/* .line {
+    animation: linemove 1s alternate infinite;
+} */
+
+@keyframes linemove {
+    0% {
+        border-top: 1px solid black
+    }
+    50% {
+        border-top: 2px solid grey;
+    }
+    100% {
+        border-top: 1px solid black;
+    }
+}
+

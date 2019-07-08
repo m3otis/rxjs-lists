@@ -25,6 +25,11 @@ import {
 } from 'rxjs/operators';
 import { createOfflineCompileUrlResolver } from '@angular/compiler';
 
+export class Project {
+  id;
+  description;
+}
+
 @Component({
   selector: 'app-parent',
   templateUrl: './parent.component.html',
@@ -48,11 +53,11 @@ export class ParentComponent implements OnInit {
       this.defaultNames$,
       this.addNameEvent$,
       this.removeNameEvent$
-    );
+    ).pipe(tap(x => console.log('selected')));
     this.unselectedNames$ = this.createUnselectedNames(
       this.allNames$,
       this.sn$
-    );
+    ).pipe(tap(x => console.log('unselected')));
   }
 
   createAllNames() {
